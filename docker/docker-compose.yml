@@ -1,19 +1,21 @@
+# este archivo sirve para definir y levantar servicios usando Docker
+# nos ayuda a no tener que instalar Mysql a mano, configurar usuarios, crear la BD y preocuparnos por versiones
+# con este archivo todo eso se crea automaticamente
 
-
-services:
-  mysql:
-    image: mysql:8.0
-    container_name: mysql_api
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: library_db
-      MYSQL_USER: api_user
-      MYSQL_PASSWORD: api_password
+services: # indica que vamos a levanter el servicio MySQL
+  mysql: # nombre del archivo
+    image: mysql:8.0 # molde para crear contenedores. indica la version que se va a utilizar.
+    container_name: mysql_api # nombre del contenedor
+    restart: always # si e cae el contenedor, Docker lo levanta solo
+    environment: # esto ya es la configuracion de la BD. 
+      MYSQL_ROOT_PASSWORD: root # cuando MySQL arranca 
+      MYSQL_DATABASE: library_db # crea la BD library_db
+      MYSQL_USER: api_user # crea el usuario api_user
+      MYSQL_PASSWORD: api_password # define la contraseña
     ports:
-      - "3307:3306"
+      - "3307:3306" # esto conecta mi PC (3307) con MySQL dentro del contenedor (3306). Seia el puente entre NodeJs y Docker
     volumes:
-      - mysql_data:/var/lib/mysql
+      - mysql_data:/var/lib/mysql # los datos se guardan fuera del contenedor. Si borramos el contenedor la BD no se pierde
 
-volumes:
-  mysql_data:
+volumes:  # define el volumen llamado mysql_data
+  mysql_data: # es como un disco duro virtual, vive aunque el contenedor muera

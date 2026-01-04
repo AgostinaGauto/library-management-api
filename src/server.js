@@ -2,7 +2,11 @@ require('dotenv').config();
 const app = require('./app');
 const sequelize = require('./config/database');
 
-const PORT = process.env.PORT || 3005;
+const PORT = process.env.PORT || 3006;
+
+app.get('/', (req, res) => {
+  res.json({ message: 'API funcionando correctamente' });
+});
 
 (async () => {
   try {

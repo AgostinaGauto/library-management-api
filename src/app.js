@@ -1,10 +1,15 @@
+// este archivo separa la definicion de la aplicacion (app.js) 
+// del arranque del servidor, esto mejora el testeo, escalabilidad y organizacion
+
 const express = require('express');
 const app = express();
+const authRoutes = require('./routes/auth.routes');
 
 // Middlewares globales
 app.use(express.json());
 
 // acá después irán las rutas
 // app.use('/api/books', bookRoutes);
+app.use('/auth', authRoutes);
 
 module.exports = app;
