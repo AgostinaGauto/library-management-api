@@ -1,57 +1,35 @@
-const User = require('../models/user'); // importamos el modelo User. Representa la tabla usuario en la BD.
-// la utilizamos para buscar usuarios
-const { generateToken } = require('../utils/jwt');
-const { hashPassword, comparePassword } = require('../utils/bcrypt');
-const { successResponse, errorResponse } = require('../utils/responses');
+// este archivo es nuestro controlador de autenticacion. Concta HTTP (req, res)
+// con la logica de negocio (services) y usa helpers de respuesta
+const { loginUser, registerUser } = require('../services/auth.services'); 
+const { successResponse, errorResponse } = require('../utils/responses'); 
 
-exports.login = async (req, res) => {
+exports.login = async (req, res) =>{ // exporta la funcion login
 
-    const { email, password } = req.body; // extrae el email y el password del cuerpo de la peticion
-
-    const user = await User.findOne({ where: { email } }); // busca un usuario en la BD que coincida con el email obtenido anteriormente
-
-    if (!user) { // si dicho usuario no existe, se notifica que las credenciales ingresadas son invalidas
-        return errorResponse(res, 401, 'Credenciales inválidas');
+    try {
+        const token = await loginUser(req.body.email, req.body.password); // llama al service loginUser, le pasa email y password
+        return successResponse(res, 200, { token }); // si todo esta bien, devuelve un token utilizando un helper de respuesta
+        
+    } catch (error) {
+        return errorResponse(res, 401, 'Credenciales invalidas');  
     }
-
-    const valid = await comparePassword(password, user.password); // compara la contraseña ingresada en texto plano
-    // con la contraseña encriptada en la bd
-
-    if (!valid) {
-        return errorResponse(res, 401, 'Credenciales inválidas'); // si la contraseña es incorrecta se notifica
-    }
-
-    const token = generateToken({ id: user.id });
-
-    return successResponse(res, 200, { token }); // devuelve el token al frontend y el frontend lo guarda en una cookie
 };
 
+exports.register = async (req, res) =>{ // exporta la funcion register
 
-exports.register = async (req, res) => {
     try {
-        const { email, password } = req.body; // obtiene el email y contraseña del cuerpo de la solicitud
-
-        const existingUser = await User.findOne({ where: { email } }); // busca si existe un usuario registrado con diho email en la BD
-
-
-        if (existingUser) { // evalua si existe el usuario con dicho email
-            return errorResponse(res, 400, 'El usuario ya existe');
-        }
-
-        const hashedPassword = await hashPassword(password); // encriptamos la contraseña que ingresa el usuario
-
-        await User.create({ // creamos el usuario en la BD 
-            email,
-            password: hashedPassword
-        });
-
+        await registerUser(req.body.email, req.body.password); // llama al service registerUser y le pasa email y password
         return successResponse(res, 201, {
             message: 'Usuario registrado correctamente'
         });
-
+        
     } catch (error) {
-       return errorResponse(res, 500, 'Error interno del servidor');
 
+        if(error.message === 'USUARIO_EXISTENTE' ){  // si el service lanzo ese error, se traduce a HTTP 400
+            return errorResponse(res, 400, 'El usuario ya existe'); // devuelve error al cliente
+
+        }
+
+        return errorResponse(res, 500, 'Error interno del servidor'); // cualquier otro error inesperado
     }
 };
 
