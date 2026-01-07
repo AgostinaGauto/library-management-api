@@ -13,7 +13,7 @@ const {
 } = require('../utils/responses');
 
 
-exports.create = async (req, res) => {
+exports.register = async (req, res) => {
     try {
         const member = await registerMember(req.body);
         return successResponse(res, 201, member);
