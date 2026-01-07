@@ -54,6 +54,11 @@ const updateMember = async (memberId, data) => { // funcion que recibe un id y u
 const deleteMember = async (memberId) => { 
     const member = await getMemberById(memberId); // busca un registro con el id recibido
 
+    if(!member){
+        throw new Error('SOCIO_NO_ENCONTRADO')
+
+    }
+
     await member.destroy(); // elimina el socio
 };
 
