@@ -58,6 +58,7 @@ exports.getById = async (req, res) => {
 
 exports.update = async (req, res) => {
     try {
+        console.log('BODY RECIBIDO:', req.body);
         const member = await updateMember(req.params.id, req.body);
         return successResponse(res, 200, member);
         

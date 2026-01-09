@@ -10,6 +10,11 @@ const Book = sequelize.define('Book', {
         autoIncrement: true
     },
 
+    author: {
+        type: DataTypes.STRING(100),
+        allowNull: false
+    },
+
     title: {
         type: DataTypes.STRING(100),
         allowNull: false

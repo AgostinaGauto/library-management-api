@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const bookController = requie('../controllers/book.controller.js');
+const bookController = require('../controllers/book.controller.js');
 const authMiddleware = require('../middlewares/auth.middleware');
 
 // todas las rutas de libro son privadas
