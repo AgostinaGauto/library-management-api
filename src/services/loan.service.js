@@ -122,30 +122,30 @@ const returnLoan = async (loanId) => {
 };
 
 const deleteLoan = async (loanId) => {
-  const transaction = await sequelize.transaction();
+  const transaction = await sequelize.transaction(); // crea una transaccion
 
   try {
-    const loan = await Loan.findByPk(loanId);
-    if (!loan) {
+    const loan = await Loan.findByPk(loanId); // busca un prestamo por su clave primaria
+    if (!loan) { // si no existe el prestamo se lanza un error y corta la ejecucion
       throw new Error('PRESTAMO_NO_ENCONTRADO');
     }
 
-    if (!loan.returnDate) {
+    if (!loan.returnDate) { // verifica si el prestamo no fue devuelto
       throw new Error('PRESTAMO_VIGENTE');
     }
 
-    await LoanDetail.destroy(
-      { where: { loanId } },
-      { transaction }
-    );
+    await LoanDetail.destroy({ // borra todos los detalles del prestamo
+       where: { loanId } ,
+       transaction 
+  });
 
-    await loan.destroy({ transaction });
+    await loan.destroy({ transaction }); // elimina el prestamo. Usa la misma transaccion
 
-    await transaction.commit();
+    await transaction.commit(); // confirma la transaccion y los cambios quedan guardados
 
-  } catch (error) {
-    await transaction.rollback();
-    throw error;
+  } catch (error) { // captura cualquier error ocurrido en el try
+    await transaction.rollback(); // deshace todas las operaciones realizadas
+    throw error; // lanza el error
   }
 };
 
