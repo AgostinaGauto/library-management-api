@@ -8,7 +8,7 @@ const Loan = require('./loan');
 const LoanDetail = require('./loanDetail');
 
 
-// relaciones
+// ---------------- relaciones -----------------
 
 // member -> loan
 // un socio puede tener muchos prestamos
@@ -56,5 +56,4 @@ module.exports = {
     Book,
     Loan,
     LoanDetail
-
 };
