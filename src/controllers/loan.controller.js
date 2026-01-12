@@ -15,8 +15,8 @@ const {
 
 exports.getBooks = async (req, res) => {
     try {
-        const books = await getAvailableBooks();
-        return successResponse(res, 200, books);
+        const books = await getAvailableBooks(); // llama al service para obtener libros disponibles
+        return successResponse(res, 200, books); // lanza un mensaje de exito llamando al utils de exito
         
     } catch (error) {
         return errorResponse(res, 500, 'Error al obtener los libros disponibles');
