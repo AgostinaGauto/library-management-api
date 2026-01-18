@@ -6,6 +6,7 @@ const Member = require('./member');
 const Book = require('./book');
 const Loan = require('./loan');
 const LoanDetail = require('./loanDetail');
+const Repair = require('./repair');
 
 
 // ---------------- relaciones -----------------
@@ -49,11 +50,23 @@ LoanDetail.belongsTo(Book, {
 
 });
 
+
+// un libro puede tener muchas reparaciones
+Book.hasMany(Repair, {
+    foreignKey: 'bookId'
+});
+
+// una reparación pertenece a un solo libro
+Repair.belongsTo(Book, {
+    foreignKey: 'bookId'
+});
+
 module.exports = {
     sequelize,
     User,
     Member,
     Book,
     Loan,
-    LoanDetail
+    LoanDetail,
+    Repair
 };

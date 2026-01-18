@@ -27,6 +27,7 @@ exports.start = async (req, res) => {
                 return errorResponse(res, 400, 'El libro ya está en reparación');
 
             default:
+                console.error(error);
                 return errorResponse(res, 500, 'Error al crear la reparación')
         }
     }
@@ -35,18 +36,32 @@ exports.start = async (req, res) => {
 
 exports.remove = async (req, res) => {
     try {
-
         await deleteRepair(req.params.id);
-        return successResponse(res, 200, 'Reparacion eliminada correctamente');
-        
+
+        return successResponse(res, 200, {
+            message: 'Reparación eliminada correctamente'
+        });
+
     } catch (error) {
 
-        if(error.message === 'REPARACION_NO_ENCONTRADA'){
-            return errorResponse(res, 404, 'Reparación no encontrada');
+        switch (error.message) {
+            case 'REPARACION_NO_ENCONTRADA':
+                return errorResponse(res, 404, 'Reparación no encontrada');
 
+            case 'REPARACION_ACTIVA':
+                return errorResponse(
+                    res,
+                    400,
+                    'No se puede eliminar una reparación activa'
+                );
+
+            default:
+                return errorResponse(
+                    res,
+                    500,
+                    'Error al eliminar la reparación'
+                );
         }
-
-        return errorResponse(res, 500, 'Error al eliminar la reparacion');  
     }
 };
 

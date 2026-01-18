@@ -74,7 +74,7 @@ const returnLoan = async (loanId) => {
 
         }
 
-        if (!loan.returnDate) { // si ya tiene fecha de devolucion, no se puede devolver otra vez
+        if (loan.returnDate) { // si ya tiene fecha de devolucion, no se puede devolver otra vez
             throw new Error('PRESTAMO_YA_DEVUELTO');
 
         }

@@ -20,7 +20,8 @@ exports.create = async (req, res) => {
             return errorResponse(res, 400, 'El libro ya existe'); // peticion invalida
 
         }
-
+        
+        console.error('ERROR REAL:', error);
         return errorResponse(res, 500, 'Error al crear el libro'); // error generico del servidor
     }
 };

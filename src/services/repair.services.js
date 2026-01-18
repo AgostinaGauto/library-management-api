@@ -1,4 +1,4 @@
-const { Repair, Book, sequelize } = require('../models');
+const { Repair, Book, sequelize } = require('../models/index');
 
 const startRepair = async (bookId, reason) => { // funcion que recobe dos parametros
     const transaction = await sequelize.transaction(); // inicia una transaccion, si algo falla se revierte toda la operacion
@@ -81,28 +81,29 @@ const deleteRepair = async (repairId) => {
     const transaction = await sequelize.transaction(); 
 
     try {
-        const repair = await Repair.findByPk(repair.bookId); // busca la reparacion por su id
-        if (!repair) { // valida su existencia
+        const repair = await Repair.findByPk(repairId);
+        if (!repair) {
             throw new Error('REPARACION_NO_ENCONTRADA');
-
         }
 
-        const book = await Book.findByPk(repair.bookId); // busca el libro de la reparacion por su id
+        if (!repair.dischargeDate) {
+            throw new Error('REPARACION_ACTIVA');
+        }
 
-        await repair.destroy({ transaction }); // borra el registro de reparacion
+        const book = await Book.findByPk(repair.bookId);
 
-        await book.update( // actualiza el estado del libro
+        await repair.destroy({ transaction });
+
+        await book.update(
             { state: 'EN_BIBLIOTECA' },
             { transaction }
-
         );
 
-        await transaction.commit(); // guarda los cambios
+        await transaction.commit();
 
     } catch (error) {
         await transaction.rollback();
-        return error;
-
+        throw error;
     }
 };
 

@@ -6,6 +6,8 @@ const app = express();
 const authRoutes = require('./routes/auth.routes');
 const memberRoutes = require('./routes/member.routes');
 const bookRoutes = require('./routes/book.routes');
+const loanRoutes = require('./routes/loan.routes');
+const repairRoutes = require('./routes/repair.routes');
 
 // Middlewares globales
 app.use(express.json());
@@ -15,5 +17,7 @@ app.use(express.json());
 app.use('/auth', authRoutes);
 app.use('/members', memberRoutes);
 app.use('/books', bookRoutes);
+app.use('/loans', loanRoutes);
+app.use('/repairs', repairRoutes);
 
 module.exports = app;

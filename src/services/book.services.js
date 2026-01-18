@@ -9,6 +9,7 @@ const createBook = async (data) => { // funcion asincrona que recibe un objeto c
 
         const book = await Book.create({ // crea un nuevo libro en la bd y guarda los datos del libro
             title: data.title,
+            author: data.author,  
             editorial: data.editorial,
             editionDate: data.editionDate,
             language: data.language,
