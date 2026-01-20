@@ -3,14 +3,20 @@
 
 const express = require('express');
 const app = express();
+const swaggerSpec = require('./swagger');
+const swaggerUi = require('swagger-ui-express')
 const authRoutes = require('./routes/auth.routes');
 const memberRoutes = require('./routes/member.routes');
 const bookRoutes = require('./routes/book.routes');
 const loanRoutes = require('./routes/loan.routes');
 const repairRoutes = require('./routes/repair.routes');
+;
 
 // Middlewares globales
 app.use(express.json());
+
+// Swagger
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // acá después irán las rutas
 // app.use('/api/books', bookRoutes);
@@ -19,5 +25,10 @@ app.use('/members', memberRoutes);
 app.use('/books', bookRoutes);
 app.use('/loans', loanRoutes);
 app.use('/repairs', repairRoutes);
+
+
+app.get('/health', (req, res) => {
+  res.json({ status: 'OK', port: 3006 });
+});
 
 module.exports = app;
